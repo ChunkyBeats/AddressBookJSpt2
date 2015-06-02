@@ -28,30 +28,48 @@ function resetFields() {
   $("input.new-state").val("");
 }
 
+function addFields() {
+  $("#new-addresses").append('<div class="new-address">' +
+                              '<div class="form-group">' +
+                              '<label for="new-loc">Address Type</label>' +
+                              '<select class="new-loc" name="new-loc" type="text">' +
+                                '<option value="Home">Home</option>' +
+                                '<option value="Work">Work</option>' +
+                              '</select>' +
+                              '</div>' +
+                              '<div class="form-group">' +
+                                '<label for="new-street">Street</label>' +
+                                '<input type="text" class="form-control new-street">' +
+                              '</div>' +
+                              '<div class="form-group">' +
+                                '<label for="new-city">City</label>' +
+                                '<input type="text" class="form-control new-city">' +
+                              '</div>' +
+                              '<div class="form-group">' +
+                              '<label for="new-state">State</label>' +
+                              '<input type="text" class="form-control new-state">' +
+                              '</div>' +
+
+                              '</div>');
+}
+
+function displayContact(newContact) {
+  $("#show-contact").show();
+  $("#show-contact h2").text(newContact.firstName);
+  $(".first-name").text(newContact.firstName);
+  $(".last-name").text(newContact.lastName);
+
+  $("ul#addresses").text("");
+  newContact.addresses.forEach(function(address) {
+    $("ul#addresses").append("<li>" + address.loc + ": " + address.street + ", " + address.city + ", " + address.state + "</li>");
+
+  });
+
+}
+
 $(document).ready(function() {
   $("#add-address").click(function(){
-    $("#new-addresses").append('<div class="new-address">' +
-                                 '<div class="form-group">' +
-                                 '<label for="new-loc">Address Type</label>' +
-                                 '<select class="new-loc" name="new-loc" type="text">' +
-                                 '<option value="Home">Home</option>' +
-                                 '<option value="Work">Work</option>' +
-                                 '</select>' +
-                                 '</div>' +
-                                 '<div class="form-group">' +
-                                   '<label for="new-street">Street</label>' +
-                                   '<input type="text" class="form-control new-street">' +
-                                 '</div>' +
-                                 '<div class="form-group">' +
-                                   '<label for="new-city">City</label>' +
-                                   '<input type="text" class="form-control new-city">' +
-                                 '</div>' +
-                                 '<div class="form-group">' +
-                                   '<label for="new-state">State</label>' +
-                                   '<input type="text" class="form-control new-state">' +
-                                 '</div>' +
-
-                                 '</div>');
+    addFields();
   });
 
   $("form#new-contact").submit(function(event) {
@@ -62,32 +80,22 @@ $(document).ready(function() {
 
     newContact = new Contact(inputtedFirstName, inputtedLastName);
 
-    $(".new-address").each(function() {
+    $(".new-address").each(function(){
       var inputtedLoc = $(this).find("select.new-loc").val(),
       inputtedStreet = $(this).find("input.new-street").val(),
       inputtedCity = $(this).find("input.new-city").val(),
       inputtedState = $(this).find("input.new-state").val(),
       newAddress = { loc: inputtedLoc, street: inputtedStreet, city: inputtedCity,
-      state: inputtedState};
+        state: inputtedState};
 
-      newContact.addresses.push(newAddress);
+        newContact.addresses.push(newAddress);
 
     });
 
-       $("ul#contacts").append("<li><span class='contact'>" + newContact.fullName() + "</span></li>");
+    $("ul#contacts").append("<li><span class='contact'>" + newContact.fullName() + "</span></li>");
 
     $(".contact").last().click(function() {
-      $("#show-contact").show();
-
-      $("#show-contact h2").text(newContact.firstName);
-      $(".first-name").text(newContact.firstName);
-      $(".last-name").text(newContact.lastName);
-
-      $("ul#addresses").text("");
-      newContact.addresses.forEach(function(address) {
-        $("ul#addresses").append("<li>" + address.loc + ": " + address.street + ", " + address.city + ", " + address.state + "</li>");
-console.log(address.loc + address.street + address);
-      });
+      displayContact(newContact);
     });
 
     resetFields();
