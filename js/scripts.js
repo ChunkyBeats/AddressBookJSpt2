@@ -54,18 +54,20 @@ function addFields() {
 }
 
 function displayContact(newContact) {
-  $("#show-contact").show();
+  $("#show-contact").fadeIn("slow");
   $("#show-contact h2").text(newContact.firstName);
   $(".first-name").text(newContact.firstName);
   $(".last-name").text(newContact.lastName);
-
   $("ul#addresses").text("");
   newContact.addresses.forEach(function(address) {
     $("ul#addresses").append("<li>" + address.loc + ": " + address.street + ", " + address.city + ", " + address.state + "</li>");
-
   });
-
 }
+
+function hideContact() {
+  $("#show-contact").fadeOut("slow");
+}
+
 
 $(document).ready(function() {
   $("#add-address").click(function(){
@@ -84,21 +86,28 @@ $(document).ready(function() {
       var inputtedLoc = $(this).find("select.new-loc").val(),
       inputtedStreet = $(this).find("input.new-street").val(),
       inputtedCity = $(this).find("input.new-city").val(),
-      inputtedState = $(this).find("input.new-state").val(),
-      newAddress = { loc: inputtedLoc, street: inputtedStreet, city: inputtedCity,
+      inputtedState = $(this).find("input.new-state").val();
+      if (inputtedStreet && inputtedCity && inputtedState) {
+        newAddress = { loc: inputtedLoc, street: inputtedStreet, city: inputtedCity,
         state: inputtedState};
-
         newContact.addresses.push(newAddress);
+       };
 
     });
 
+    $("ul#contacts").hide();
     $("ul#contacts").append("<li><span class='contact'>" + newContact.fullName() + "</span></li>");
+    $("ul#contacts").fadeIn("slow");
 
-    $(".contact").last().click(function() {
+    $(".contact").last().hover(function() {
       displayContact(newContact);
+    }, function() {
+      hideContact();
     });
 
     resetFields();
+
+    $("div.new-address").not("#first").hide();
 
   });
 });
